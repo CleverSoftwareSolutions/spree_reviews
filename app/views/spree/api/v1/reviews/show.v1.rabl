@@ -1,5 +1,5 @@
 object @review
-attributes :id, :rating, :title, :review, :show_identifier
+attributes :id, :rating, :title, :review, :show_identifier, :created_at
 
 node(:name) { |review| review.show_identifier ? review.name : Spree.t(:anonymous) }
 node(:email) do |review|
