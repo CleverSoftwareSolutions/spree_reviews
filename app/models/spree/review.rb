@@ -32,4 +32,8 @@ class Spree::Review < ActiveRecord::Base
   def recalculate_product_rating
     product.recalculate_rating if product.present?
   end
+
+  def send_notification
+    Spree::ReviewMailer.review_notification_email(self).deliver_later
+  end
 end

@@ -22,6 +22,9 @@ module Spree
     # (name or email) on their review.
     preference :show_identifier, :boolean, default: false
 
+    # Notify the admin on new review via email
+    preference :email_notification, :boolean, default: false
+
     def stars
       5
     end

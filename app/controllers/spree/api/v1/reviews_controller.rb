@@ -26,6 +26,7 @@ module Spree
 
           authorize! :create, @review
           if @review.save
+            @review.send_notification if Spree::Reviews::Config[:email_notification]
             respond_with(@review, status: 201, default_template: :show)
           else
             invalid_resource!(@review)

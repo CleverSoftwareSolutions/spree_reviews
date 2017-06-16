@@ -47,6 +47,13 @@
 				<% end %>
 			</div>
 
+			<div class="checkbox">
+				<%= label_tag :email_notification do %>
+					<%= preference_field_tag :email_notification, Spree::Reviews::Config[:email_notification], type: :boolean %>
+					<%= Spree.t(:email_notification, scope: :spree_reviews) %>
+				<% end %>
+			</div>
+
 			<div class="form-group">
 				<%= label_tag Spree.t(:preview_size, scope: :spree_reviews) %>
 				<%= number_field_tag :preview_size, Spree::Reviews::Config[:preview_size], class: 'form-control' %>

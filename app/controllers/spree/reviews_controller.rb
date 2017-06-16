@@ -25,6 +25,7 @@ class Spree::ReviewsController < Spree::StoreController
     authorize! :create, @review
     if @review.save
       flash[:notice] = Spree.t(:review_successfully_submitted)
+      @review.send_notification if Spree::Reviews::Config[:email_notification]
       redirect_to spree.product_path(@product)
     else
       render :new
