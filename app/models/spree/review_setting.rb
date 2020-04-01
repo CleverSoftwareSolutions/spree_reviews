@@ -22,6 +22,9 @@ module Spree
     # (name or email) on their review.
     preference :show_identifier, :boolean, default: false
 
+    # Need token to be able to create review
+    preference :require_token, :boolean, default: false
+
     def stars
       5
     end

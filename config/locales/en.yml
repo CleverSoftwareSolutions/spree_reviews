@@ -15,6 +15,15 @@ en:
       spree/review:
         one: one review
         other: "%{count} reviews"
+    errors:
+      models:
+        spree/review:
+          attributes:
+            token:
+              invalid_token: "Invalid token"
+              token_expired: "Token is expired"
+              product_not_matching: "Product is matching"
+              token_missing: "Token is missing"
   spree:
     approval_status: Approval status
     approve: Approve
@@ -66,3 +75,9 @@ en:
     write_your_own_review: Write your own review
     you_must_enter_value_for_rating: "You must enter a value for rating."
     anonymous: Anonymous
+    "yes": "Yes"
+    "no": "No"
+    all: All
+    brand_site: Brand site
+    ecom_site: Ecom site
+    social: Social

@@ -49,11 +49,16 @@
 	<table class="table" id="listing_reviews">
 		<thead>
 			<tr>
-				<th><%= sort_link @search, :product, Spree.t(:product) %></th>
+				<th><%=  sort_link @search, :product, Spree.t(:product) %></th>
 				<th><%= sort_link @search, :rating, Spree::Review.human_attribute_name(:rating) %></th>
-				<th><%= Spree.t(:feedback) %></th>
+				<% if Spree::Reviews::Config[:feedback_rating] %>
+					<th><%= Spree.t(:feedback) %></th>
+				<% end %>
 				<th><%= sort_link @search, :user, Spree::Review.human_attribute_name(:user) %></th>
-				<th><%= sort_link @search, :ip_address, Spree::Review.human_attribute_name(:ip_address) %></th>
+				<th><%= Spree.t(:name) %></th>
+				<th><%= Spree.t(:order) %></th>
+				<th><%= Spree.t(:attachment) %></th>
+				<th><%= Spree.t(:agreed_to_share) %></th>
 				<th><%= sort_link @search, :created_at, Spree::Review.human_attribute_name(:created_at) %></th>
 				<th data-hook="admin_reviews_index_header_actions" class="actions"></th>
 			</tr>
@@ -61,11 +66,39 @@
 		<tbody>
 			<% @reviews.each do |review| %>
 				<tr data-hook="admin_reviews_index_rows" id="<%= dom_id review %>" class="<%= cycle('odd', 'even') %>">
-					<td><%= link_to_if review.product, review.product.name, product_path(review.product) %></td>
+					<td><%= link_to_if review.product, review.product.name, edit_admin_product_path(review.product) %></td>
 					<td><%= txt_stars(review.rating) %></td>
-					<td><%= link_to "(#{review.feedback_stars}/#{review.feedback_reviews.size})", admin_review_feedback_reviews_path(review) %></td>
-					<td><%= review.user_id ? link_to(review.user.try(:email), [:admin, review.user]) : Spree.t(:anonymous) %></td>
-					<td><%= link_to_if review.ip_address, review.ip_address, "http://whois.domaintools.com/#{review.ip_address}", target: :blank %></td>
+					<% if Spree::Reviews::Config[:feedback_rating] %>
+						<td><%= link_to "(#{review.feedback_stars}/#{review.feedback_reviews.size})", admin_review_feedback_reviews_path(review) %></td>
+					<% end %>
+					<td><%= review.user_id ? link_to(review.user.try(:email), edit_admin_user_path(review.user)) : (review.order_id ? review.order.email : Spree.t(:anonymous)) %></td>
+					<td><%= review.name %> </td>
+					<td><%= review.order_id ? link_to(review.order.number, edit_admin_order_path(review.order)) : "-" %> </td>
+					<td class="image">
+						<% if review.image_file_name.present? %>
+							<a href="<%= review.image.url(:original) %>" download="<%= "review_attachment_#{review.id}__#{review.product.sku}.#{review.image.content_type.split('/')[1]}" %>">
+								<img src="<%= review.image.url(:thumb) %>" style="max-height:100px"/>
+							</a>
+						<% end %>
+					</td>
+					<td>
+						<% if review.share_all %>
+                            <div><%= Spree.t(:all) %></div>
+                        <% else %>
+                            <% if review.share_brand_site %>
+                                <div><%= Spree.t(:brand_site) %></div>
+						    <% end %>
+                            <% if review.share_ecom_site %>
+                                <div><%= Spree.t(:ecom_site) %></div>
+						    <% end %>
+                            <% if review.share_social %>
+                                <div><%= Spree.t(:social) %></div>
+						    <% end %>
+                            <% if !review.share_social && !review.share_ecom_site && !review.share_brand_site %>
+                                <div><%= Spree.t(:no) %></div>
+						    <% end %>
+						<% end %>
+					</td>
 					<td><%= l review.created_at, format: :short %></td>
 					<td data-hook="admin_reviews_index_row_actions" class="actions">
 						<%= link_to_with_icon 'save', Spree.t(:approve), approve_admin_review_url(review), no_text: true, class: 'approve btn btn-default' unless review.approved %>
